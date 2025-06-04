@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+    <link rel="stylesheet" href="/static/results.css">
+</head>
+
+<body>
+    <div class="header">
+        <h1>Search Results</h1>
+        <form action="/download" method="POST">
+            <input type="hidden" name="level" value="{{.Query.Level}}">
+            <input type="hidden" name="message" value="{{.Query.Message}}">
+            <input type="hidden" name="resourceId" value="{{.Query.ResourceID}}">
+            <input type="hidden" name="traceId" value="{{.Query.TraceID}}">
+            <input type="hidden" name="spanId" value="{{.Query.SpanID}}">
+            <input type="hidden" name="commit" value="{{.Query.Commit}}">
+            <input type="hidden" name="parentResourceId" value="{{.Query.ParentResourceID}}">
+            <input type="hidden" name="startDate" value="{{.Query.StartDate}}">
+            <input type="hidden" name="startTime" value="{{.Query.StartTime}}">
+            <input type="hidden" name="endDate" value="{{.Query.EndDate}}">
+            <input type="hidden" name="endTime" value="{{.Query.EndTime}}">
+            <button type="submit" class="pagination-button download-button">Download CSV</button>
+        </form>
+    </div>
+
+    {{if .Results}}
+    <table>
+        <tr>
+            <th>
+                Timestamp
+                <a href="?sort=timestamp&order={{toggleSortOrder .SortField .SortOrder " timestamp"}}"
+                    class="sort-btn">↕</a>
+            </th>
+            <th>
+                Level
+                <a href="?sort=level&order={{toggleSortOrder .SortField .SortOrder " level"}}" class="sort-btn">↕</a>
+            </th>
+            <th>Message</th>
+            <th>
+                Resource ID
+                <a href="?sort=resourceId&order={{toggleSortOrder .SortField .SortOrder " resourceId"}}"
+                    class="sort-btn">↕</a>
+            </th>
+            <th>
+                Trace ID
+                <a href="?sort=traceId&order={{toggleSortOrder .SortField .SortOrder " traceId"}}"
+                    class="sort-btn">↕</a>
+            </th>
+            <th>
+                Span ID
+                <a href="?sort=spanId&order={{toggleSortOrder .SortField .SortOrder " spanId"}}" class="sort-btn">↕</a>
+            </th>
+            <th>Commit</th>
+            <th>
+                Parent Resource ID
+                <a href="?sort=parentResourceId&order={{toggleSortOrder .SortField .SortOrder " parentResourceId"}}"
+                    class="sort-btn">↕</a>
+            </th>
+        </tr>
+        {{range .Results}}
+        <tr>
+            <td>{{.Timestamp}}</td>
+            <td>{{.Level}}</td>
+            <td>{{.Message}}</td>
+            <td>{{.ResourceID}}</td>
+            <td>{{.TraceID}}</td>
+            <td>{{.SpanID}}</td>
+            <td>{{.Commit}}</td>
+            <td>{{.Metadata.ParentResourceID}}</td>
+        </tr>
+        {{end}}
+    </table>
+
+    <div class="pagination">
+
+        {{if .HasPrev}}
+        <a class="pagination-button" href="/results?page={{sub .Page 1}}">Previous</a>
+        {{end}}
+        {{if .HasNext}}
+        <a class="pagination-button" href="/results?page={{add .Page 1}}">Next</a>
+        {{end}}
+        <p class="pagination-info">Page {{.Page}} of {{.TotalPages}}</p>
+    </div>
+
+
+    {{else}}
+    <p>No results found.</p>
+    {{end}}
+
+</body>
+
+</html>
